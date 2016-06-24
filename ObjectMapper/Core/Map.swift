@@ -35,7 +35,7 @@ public protocol MapContext {
 }
 
 /// A class used for holding mapping data
-public final class Map {
+public final class Map: NSObject, NSCoding {
 	public let mappingType: MappingType
 	
 	public internal(set) var JSONDictionary: [String : AnyObject] = [:]
@@ -97,6 +97,23 @@ public final class Map {
         }
 		
 		return self
+	}
+
+	// MARK: NSCoding
+
+	public convenience init?(coder aDecoder: NSCoder) {
+		if let dict = aDecoder.decodeObjectForKey("JSONDictionary") as? [String : AnyObject], type = MappingType(rawValue: aDecoder.decodeIntegerForKey("mappingType")) {
+			let toObject = aDecoder.decodeBoolForKey("toObject")
+			self.init(mappingType: type, JSONDictionary: dict, toObject: toObject)
+		} else {
+			return nil
+		}
+	}
+
+	public func encodeWithCoder(aCoder: NSCoder) {
+		aCoder.encodeObject(self.JSONDictionary, forKey: "JSONDictionary")
+		aCoder.encodeInteger(self.mappingType.rawValue, forKey: "mappingType")
+		aCoder.encodeBool(self.toObject, forKey: "toObject")
 	}
 	
 	// MARK: Immutable Mapping

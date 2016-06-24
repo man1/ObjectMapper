@@ -28,7 +28,7 @@
 
 import Foundation
 
-public enum MappingType {
+public enum MappingType: Int {
 	case FromJSON
 	case ToJSON
 }
